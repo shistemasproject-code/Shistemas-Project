@@ -1,0 +1,201 @@
+
+<h2 class="sr-only">Roadmap de melhorias para agregar valor ao Shistemas Pizza</h2>
+
+<style>
+.rm-section{margin-bottom:2rem}
+.rm-label{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--color-text-secondary);margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:.5px solid var(--color-border-tertiary)}
+.rm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.rm-card{background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem;cursor:pointer;transition:border-color .15s}
+.rm-card:hover{border-color:var(--color-border-primary)}
+.rm-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:.5rem}
+.rm-icon{font-size:20px;flex-shrink:0}
+.rm-price{font-size:11px;font-weight:500;padding:2px 8px;border-radius:var(--border-radius-md);white-space:nowrap}
+.price-green{background:var(--color-background-success);color:var(--color-text-success)}
+.price-blue{background:var(--color-background-info);color:var(--color-text-info)}
+.price-amber{background:var(--color-background-warning);color:var(--color-text-warning)}
+.rm-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:.3rem}
+.rm-desc{font-size:12px;color:var(--color-text-secondary);line-height:1.5}
+.rm-effort{font-size:11px;color:var(--color-text-tertiary);margin-top:.5rem;display:flex;align-items:center;gap:4px}
+.dot{width:6px;height:6px;border-radius:50%;display:inline-block;flex-shrink:0}
+.dot-easy{background:#639922}
+.dot-med{background:#BA7517}
+.dot-hard{background:#E24B4A}
+.detail-box{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1.25rem;margin-top:1.5rem;display:none}
+.detail-box.open{display:block}
+.detail-title{font-size:15px;font-weight:500;margin-bottom:.75rem;color:var(--color-text-primary)}
+.detail-row{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:.75rem}
+.detail-item{flex:1;min-width:140px}
+.detail-item-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:3px;text-transform:uppercase;letter-spacing:.06em}
+.detail-item-val{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.detail-steps{font-size:12px;color:var(--color-text-secondary);line-height:1.8;border-top:.5px solid var(--color-border-tertiary);padding-top:.75rem;margin-top:.5rem}
+.rm-cta{display:inline-block;margin-top:.75rem;font-size:12px;color:var(--color-text-info);cursor:pointer}
+</style>
+
+<div style="padding:.5rem 0 1.5rem">
+
+<div class="rm-section">
+  <div class="rm-label"><i class="ti ti-bolt" style="font-size:13px" aria-hidden="true"></i> Impacto alto · implementar primeiro</div>
+  <div class="rm-grid" id="grid-alta"></div>
+</div>
+
+<div class="rm-section">
+  <div class="rm-label"><i class="ti ti-trending-up" style="font-size:13px" aria-hidden="true"></i> Médio prazo · aumentam retenção</div>
+  <div class="rm-grid" id="grid-media"></div>
+</div>
+
+<div class="rm-section">
+  <div class="rm-label"><i class="ti ti-star" style="font-size:13px" aria-hidden="true"></i> Longo prazo · diferenciais premium</div>
+  <div class="rm-grid" id="grid-longa"></div>
+</div>
+
+<div class="detail-box" id="detail-box">
+  <div class="detail-title" id="detail-title"></div>
+  <div class="detail-row" id="detail-row"></div>
+  <div class="detail-steps" id="detail-steps"></div>
+  <button onclick="sendPrompt(document.getElementById('detail-prompt').value)" class="rm-cta">Como implementar isso no sistema ↗</button>
+  <input type="hidden" id="detail-prompt"/>
+</div>
+
+</div>
+
+<script>
+const items = {
+  alta:[
+    {
+      icon:'💳', title:'Pix automático no checkout',
+      desc:'Cliente paga pelo cardápio online. Pedido só entra se o pagamento confirmar.',
+      price:'+R$ 500 impl.', priceClass:'price-green', effort:'fácil', effortClass:'dot-easy',
+      valor:'R$ 500 de implantação + R$ 80/mês', tempo:'1–2 dias',
+      como:'Integrar Mercado Pago ou PagSeguro via API. Webhook confirma pagamento e libera o pedido.',
+      prompt:'Como integrar pagamento Pix automático no sistema de cardápio online com Mercado Pago?'
+    },
+    {
+      icon:'📊', title:'Relatório PDF mensal automático',
+      desc:'Todo dia 1, o sistema envia por e-mail um PDF com resumo do mês anterior.',
+      price:'+R$ 50/mês', priceClass:'price-green', effort:'fácil', effortClass:'dot-easy',
+      valor:'Cobrar R$ 50/mês adicional de cada cliente', tempo:'1 dia',
+      como:'Gerar PDF com os dados do Supabase e enviar via Resend ou SendGrid. Agendar com cron.',
+      prompt:'Como gerar e enviar relatório PDF mensal automático do sistema de pedidos?'
+    },
+    {
+      icon:'🌐', title:'Domínio próprio para o cardápio',
+      desc:'pedidos.minhapizzaria.com.br em vez de link genérico. Profissionaliza a marca.',
+      price:'+R$ 50/mês', priceClass:'price-green', effort:'fácil', effortClass:'dot-easy',
+      valor:'R$ 50/mês por cliente, custo real ~R$ 5', tempo:'2 horas',
+      como:'Hospedar o cardápio no GitHub Pages ou Netlify com domínio personalizado do cliente.',
+      prompt:'Como hospedar o cardápio online em domínio próprio do cliente com GitHub Pages?'
+    },
+    {
+      icon:'🔔', title:'Notificação sonora + visual no celular',
+      desc:'Quando chega pedido novo, o celular do operador vibra e toca — mesmo com a tela bloqueada.',
+      price:'no plano', priceClass:'price-blue', effort:'fácil', effortClass:'dot-easy',
+      valor:'Agrega valor sem custo extra, retém cliente', tempo:'1 dia',
+      como:'Push Notification via Web Push API + Service Worker. Funciona offline e com tela bloqueada.',
+      prompt:'Como implementar Web Push Notification para novos pedidos no sistema de gestão?'
+    },
+  ],
+  media:[
+    {
+      icon:'🎁', title:'Programa de fidelidade',
+      desc:'A cada 10 pizzas, o cliente ganha uma grátis. Controle automático pelo histórico.',
+      price:'+R$ 300 impl.', priceClass:'price-blue', effort:'médio', effortClass:'dot-med',
+      valor:'R$ 300 de implantação + diferencial de venda', tempo:'2–3 dias',
+      como:'Tabela de pontos no Supabase. Cardápio mostra saldo de pontos. Operador resgata no modal.',
+      prompt:'Como implementar programa de fidelidade de pontos integrado ao cardápio online?'
+    },
+    {
+      icon:'📱', title:'App do motoboy (PWA)',
+      desc:'Motoboy instala como app no celular, recebe pedidos, confirma entrega com foto.',
+      price:'+R$ 400 impl.', priceClass:'price-blue', effort:'médio', effortClass:'dot-med',
+      valor:'R$ 400 de implantação + R$ 100/mês', tempo:'3–4 dias',
+      como:'PWA separado com geolocalização. Motoboy vê apenas seus pedidos ativos.',
+      prompt:'Como criar um PWA de entregador integrado ao sistema de gestão de pedidos?'
+    },
+    {
+      icon:'📣', title:'Disparo de WhatsApp em massa',
+      desc:'Envia promoção para toda a base de clientes com um clique. Ex: "Sexta com 15% off".',
+      price:'+R$ 200 impl.', priceClass:'price-blue', effort:'médio', effortClass:'dot-med',
+      valor:'R$ 200 impl. + R$ 50/mês (custo API Evolution)', tempo:'2 dias',
+      como:'Integrar Evolution API (WhatsApp unofficial). Painel de templates no sistema.',
+      prompt:'Como integrar disparo de WhatsApp em massa para promoções no sistema de gestão?'
+    },
+    {
+      icon:'⭐', title:'Avaliação pós-entrega',
+      desc:'Após confirmar entrega, manda link para o cliente avaliar de 1 a 5 estrelas.',
+      price:'no plano', priceClass:'price-blue', effort:'fácil', effortClass:'dot-easy',
+      valor:'Diferencial de venda, dados de qualidade', tempo:'1 dia',
+      como:'Mensagem WhatsApp automática com link para página simples de avaliação no Supabase.',
+      prompt:'Como implementar avaliação pós-entrega com envio automático por WhatsApp?'
+    },
+  ],
+  longa:[
+    {
+      icon:'🤖', title:'IA para sugestão de cardápio',
+      desc:'Analisa histórico de pedidos e sugere ao operador quais promoções fazer para aumentar ticket.',
+      price:'+R$ 800 impl.', priceClass:'price-amber', effort:'complexo', effortClass:'dot-hard',
+      valor:'R$ 800 impl. + posiciona como tech premium', tempo:'1 semana',
+      como:'Usar Claude API para analisar dados do Supabase e gerar insights semanais automáticos.',
+      prompt:'Como integrar IA para análise de pedidos e sugestão de promoções no sistema de pizzaria?'
+    },
+    {
+      icon:'🗺️', title:'Rastreamento de entrega ao vivo',
+      desc:'Cliente vê o motoboy se movendo no mapa em tempo real até chegar na porta.',
+      price:'+R$ 600 impl.', priceClass:'price-amber', effort:'complexo', effortClass:'dot-hard',
+      valor:'R$ 600 impl. + R$ 100/mês, diferencial top', tempo:'1 semana',
+      como:'PWA do motoboy envia GPS a cada 5s via Supabase Realtime. Cardápio exibe no mapa.',
+      prompt:'Como implementar rastreamento GPS ao vivo do motoboy integrado ao cardápio online?'
+    },
+    {
+      icon:'🏪', title:'Multi-unidade',
+      desc:'Pizzaria com 2 ou mais lojas no mesmo sistema. Cada unidade com seu cardápio e cozinha.',
+      price:'+R$ 1.000/unid.', priceClass:'price-amber', effort:'complexo', effortClass:'dot-hard',
+      valor:'Dobra o ticket do cliente, abre novo mercado', tempo:'2 semanas',
+      como:'Adicionar campo unidade nas tabelas. Filtros por loja no dashboard. Login separado por unidade.',
+      prompt:'Como adaptar o sistema para suportar múltiplas unidades da mesma pizzaria?'
+    },
+    {
+      icon:'📲', title:'Cardápio para WhatsApp Business',
+      desc:'Cliente pede direto no chat do WhatsApp. Bot responde automaticamente com o cardápio.',
+      price:'+R$ 700 impl.', priceClass:'price-amber', effort:'complexo', effortClass:'dot-hard',
+      valor:'R$ 700 impl. + R$ 120/mês (API oficial)', tempo:'1 semana',
+      como:'Integrar WhatsApp Business API oficial (Meta). Chatbot com fluxo de pedido via mensagens.',
+      prompt:'Como criar chatbot de pedidos pelo WhatsApp Business integrado ao sistema de gestão?'
+    },
+  ]
+};
+
+function renderCard(item, id){
+  return `<div class="rm-card" onclick="openDetail(${JSON.stringify(id)})">
+    <div class="rm-card-top">
+      <span class="rm-icon">${item.icon}</span>
+      <span class="rm-price ${item.priceClass}">${item.price}</span>
+    </div>
+    <div class="rm-title">${item.title}</div>
+    <div class="rm-desc">${item.desc}</div>
+    <div class="rm-effort"><span class="dot ${item.effortClass}"></span>${item.effort}</div>
+  </div>`;
+}
+
+let allItems = {};
+['alta','media','longa'].forEach(cat => {
+  items[cat].forEach((item, i) => {
+    const id = cat+'-'+i;
+    allItems[id] = item;
+    document.getElementById('grid-'+cat).insertAdjacentHTML('beforeend', renderCard(item, id));
+  });
+});
+
+function openDetail(id){
+  const item = allItems[id];
+  const box = document.getElementById('detail-box');
+  document.getElementById('detail-title').textContent = item.icon + ' ' + item.title;
+  document.getElementById('detail-row').innerHTML = `
+    <div class="detail-item"><div class="detail-item-label">Valor a cobrar</div><div class="detail-item-val">${item.valor}</div></div>
+    <div class="detail-item"><div class="detail-item-label">Tempo de impl.</div><div class="detail-item-val">${item.tempo}</div></div>
+  `;
+  document.getElementById('detail-steps').textContent = item.como;
+  document.getElementById('detail-prompt').value = item.prompt;
+  box.classList.add('open');
+  box.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+</script>
